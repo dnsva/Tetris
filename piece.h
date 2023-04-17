@@ -16,7 +16,7 @@ using namespace std;
 struct block{
 
     vector<pair<int,int>>coords;
-    int type;
+    int type = 0;
 
     void generate_piece();
     void rotatePiece(){
@@ -27,10 +27,10 @@ struct block{
 
         // Rotate each point of the block around the center
         for (int i = 0; i < 4; i++) {
-            int new_x = new_coords[i].first;
-            int new_y = new_coords[i].second;
-            new_coords[i].first = cx + (new_y - cy);
-            new_coords[i].second = cy - (new_x - cx);
+            int tmp_x = new_coords[i].first;
+            int tmp_y = new_coords[i].second;
+            new_coords[i].first = cx + (tmp_y - cy);
+            new_coords[i].second = cy - (tmp_x - cx);
         }
 
         //check if valid
@@ -93,13 +93,13 @@ O_BLOCK.coords = {
     {2,5}
 }
 
-I_BLOCK.type = 1;
-J_BLOCK.type = 2;
-L_BLOCK.type = 3;
-Z_BLOCK.type = 4;
-S_BLOCK.type = 5;
-T_BLOCK.type = 6;
-O_BLOCK.type = 7;
+I_BLOCK.type = 2;
+J_BLOCK.type = 3;
+L_BLOCK.type = 4;
+Z_BLOCK.type = 5;
+S_BLOCK.type = 6;
+T_BLOCK.type = 7;
+O_BLOCK.type = 8;
 
 block::generate_piece(){
 

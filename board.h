@@ -30,18 +30,27 @@ struct BOARD{
         //DRAW BORDERS & COLORR
         for (int i = 0; i < BOARD_HEIGHT; i++) {
             for (int j = 0; j < BOARD_WIDTH; j++) {
-                if (i == 0 || i == BOARD_HEIGHT-1 || j == 0 || j == BOARD_WIDTH-1) {
-                    mvprintw(i, j, "#");
-                } else {
-                    mvprintw(i, j, " ");
-                }
 
-                int color = board[i][j];
+                int color = board[i][j].type;
                 if (color > 0) {
                     attron(COLOR_PAIR(color));
                     mvprintw(i, j, " ");
                     attroff(COLOR_PAIR(color));
                 }
+                
+                if (i == 0 || i == BOARD_HEIGHT-1 || j == 0 || j == BOARD_WIDTH-1) {
+                    mvprintw(i, j, "#");
+                } else {
+
+                    if(board[i][j] != 0){
+                        
+                    }else{
+                        mvprintw(i, j, " ");
+                    }
+                    
+                }
+
+                
             }
         }
     }
