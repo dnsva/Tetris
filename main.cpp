@@ -1,5 +1,8 @@
 
-#include <iostream>
+
+#include "board.h"
+#include "game.h"
+#include "piece.h"
 
 using namespace std;
 
