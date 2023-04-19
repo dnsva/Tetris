@@ -3,6 +3,7 @@
         "*.tex": "latex",
         "vector": "cpp",
         "iosfwd": "cpp",
-        "ctime": "cpp"
+        "ctime": "cpp",
+        "iostream": "cpp"
     }
 }
