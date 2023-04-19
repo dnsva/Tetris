@@ -1,13 +1,26 @@
 
 
-#include "board.h"
-#include "game.h"
-#include "piece.h"
+#include <iostream>
 
 using namespace std;
 
-int main(){
-
-    cout<<"Hello world\n";
-    return 0;
+#include <ncurses.h>
+#include "classes.h"
+#include "board_functions.h"
+int main(){	
+	 cout<<"hello\n";
+	/*
+	ok_board();
+	ok_game();
+	ok_piece();
+	
+	
+	initscr();			
+	printw("Hello World !!!");	
+	refresh();			
+	getch();			
+	endwin();	
+	*/		
+	
+	return 0;
 }

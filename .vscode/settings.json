@@ -2,6 +2,7 @@
     "files.associations": {
         "*.tex": "latex",
         "vector": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "ctime": "cpp"
     }
 }

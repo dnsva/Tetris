@@ -8,12 +8,20 @@
 #include <ncurses.h>
 #include <vector>
 
+using namespace std;
+/*
+#include "board.h"
+#include "piece.h"
+void ok_game(){
+    printf("FROM GAME.H\n");
+}
+
+
 int SCORE = 0;
 
 void GAME();
 void loop();
 
-BOARD board;
 block curr_block;
 vector<block> blocks;
 
@@ -25,7 +33,7 @@ bool check_game_over();
 bool check_game_over() {
     // check if the first row has any blocks in it
     for (int j = 1; j < BOARD_WIDTH-1; j++) {
-        if (board[1][j] != 0) {
+        if (BOARD[1][j] != 0) {
             return true;
         }
     }
@@ -57,13 +65,13 @@ void GAME() {
     curr_block.type = curr_block.generate_piece();
    
     // draw the board and the current block
-    board.draw();
+    draw_board();
 
 }
 
 // main game loop
 void loop() {
-    while (!board.isGameOver()) {
+    while (!BOARD.isGameOver()) {
         // check for user input
         int ch = getch();
         switch (ch) {
@@ -84,5 +92,7 @@ void loop() {
                 return;
     }
 }
+
+*/
 
 #endif
