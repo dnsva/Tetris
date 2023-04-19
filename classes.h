@@ -21,7 +21,7 @@ struct block{
     vector<pair<int,int>>coords;
     int type = 0;
 
-    void generate_piece(){
+    void generate_block(){
         int selection = rand()%7 + 1;
         switch(selection){
             case 1: //I BLOCK
@@ -89,7 +89,7 @@ struct block{
                 break;
         }
     }
-    void rotatePiece(){
+    void rotate_block(){
         vector<pair<int,int>>new_coords(coords);
 
         int cx = (new_coords[0].first + new_coords[1].first + new_coords[2].first + new_coords[3].first) / 4;
@@ -108,7 +108,44 @@ struct block{
             coords = {new_coords};
         }
     }
+    bool check_collision(){
+       //check if it has collided with the board 
 
+       return true; //if it has collided 
+    }
+    void move_DOWN(){
+        vector<pair<int,int>>new_coords(coords);
+
+        for(int i = 0; i<new_coords.size(); ++i){
+            new_coords[i].first++;
+        }
+        
+        if(check_valid_pos(new_coords)){
+            coords = {new_coords};
+        }
+    }
+    void move_LEFT(){
+        vector<pair<int,int>>new_coords(coords);
+
+        for(int i = 0; i<new_coords.size(); ++i){
+            new_coords[i].second--;
+        }
+        
+        if(check_valid_pos(new_coords)){
+            coords = {new_coords};
+        }
+    }
+    void move_RIGHT(){
+        vector<pair<int,int>>new_coords(coords);
+
+        for(int i = 0; i<new_coords.size(); ++i){
+            new_coords[i].second++;
+        }
+        
+        if(check_valid_pos(new_coords)){
+            coords = {new_coords};
+        }
+    }
 };
 
 bool check_valid_pos(vector<pair<int,int>>curr_coords){ //check if B is in valid position on board

@@ -38,8 +38,6 @@ void draw_board(){
     }
 }
 
-
-
 void add_block(block B){ //add block to board
     for(pair<int,int>p : B.coords){
         BOARD[p.first][p.second] = B.type;
@@ -81,6 +79,16 @@ void clear_rows(){ //clear full rows
     }
 
 
+}
+
+bool check_game_over(){
+    //check if the first row has blocks
+    for (int j = 1; j < BOARD_WIDTH-1; j++) {
+        if (BOARD[1][j] != 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif
