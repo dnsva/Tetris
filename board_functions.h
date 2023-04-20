@@ -12,12 +12,29 @@ using namespace std;
 void draw_board(){
     //DRAW BORDERS & COLORR
     for (int i = 0; i < BOARD_HEIGHT; i++) {
-        for (int j = 0; j < BOARD_WIDTH; j++) {
 
+        int j2 = 0;
+
+        for (int j = 0; j < BOARD_WIDTH; j++) {
+            
             int color = BOARD[i][j];
             if (color > 0) {
                 attron(COLOR_PAIR(color));
-                mvprintw(i, j, " ");
+                
+                //char const* u = "\u25A1";
+            
+                //mvprintw(i,j, "%s", u);
+
+                char const* u = "█";
+                mvprintw(i,j2, "%s%s", u ,u);
+
+                //mvaddch(i,j,(char)219);
+
+                //wchar_t mychar = L'\u25A1';
+                // print the character using wprintw
+                //mvprintw(i,j, "%lc\n", mychar);
+                //wprintw(stdscr, "%lc\n", mychar);
+                //mvprintw(i, j, "□");
                 attroff(COLOR_PAIR(color));
             }
             
@@ -28,10 +45,12 @@ void draw_board(){
                 if(BOARD[i][j] != 0){
                     
                 }else{
-                    mvprintw(i, j, " ");
+                    mvprintw(i, j2, "  ");
                 }
                 
             }
+
+            j2 += 2;
 
             
         }
@@ -84,7 +103,7 @@ void clear_rows(){ //clear full rows
 bool check_game_over(){
     //check if the first row has blocks
     for (int j = 1; j < BOARD_WIDTH-1; j++) {
-        if (BOARD[1][j] != 0) {
+        if (BOARD[1][j] == 1) {
             return true;
         }
     }

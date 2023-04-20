@@ -7,12 +7,13 @@
 
 using namespace std;
 
-const int BOARD_WIDTH = 10;
+const int BOARD_WIDTH = 20;
 const int BOARD_HEIGHT = 20;
 
 int SCORE = 0;
 
 bool check_valid_pos(vector<pair<int,int>>curr_coords);
+void update_block_pos(vector<pair<int,int>>coords, int type);
 
 int BOARD[BOARD_HEIGHT][BOARD_WIDTH] = {}; //[r][c]
 
@@ -104,14 +105,15 @@ struct block{
         }
 
         //check if valid
-        if(check_valid_pos(new_coords)){
+       //if(check_valid_pos(new_coords)){
             coords = {new_coords};
-        }
+            update_block_pos(coords, type);
+       // }
     }
     bool check_collision(){
        //check if it has collided with the board 
 
-       return true; //if it has collided 
+       return false; //if it has collided 
     }
     void move_DOWN(){
         vector<pair<int,int>>new_coords(coords);
@@ -120,20 +122,24 @@ struct block{
             new_coords[i].first++;
         }
         
-        if(check_valid_pos(new_coords)){
+        //if(check_valid_pos(new_coords)){
             coords = {new_coords};
-        }
+            update_block_pos(coords, type);
+        //}
     }
     void move_LEFT(){
         vector<pair<int,int>>new_coords(coords);
 
         for(int i = 0; i<new_coords.size(); ++i){
+
+          //  printw("hello??\n");
             new_coords[i].second--;
         }
         
-        if(check_valid_pos(new_coords)){
+        //if(check_valid_pos(new_coords)){
             coords = {new_coords};
-        }
+            update_block_pos(coords, type);
+        //}
     }
     void move_RIGHT(){
         vector<pair<int,int>>new_coords(coords);
@@ -142,10 +148,14 @@ struct block{
             new_coords[i].second++;
         }
         
-        if(check_valid_pos(new_coords)){
+        //if(check_valid_pos(new_coords)){
             coords = {new_coords};
-        }
+            update_block_pos(coords, type);
+        //}
     }
+
+
+
 };
 
 bool check_valid_pos(vector<pair<int,int>>curr_coords){ //check if B is in valid position on board
@@ -169,5 +179,29 @@ bool check_valid_pos(vector<pair<int,int>>curr_coords){ //check if B is in valid
     return true;
 
 } 
+void update_block_pos(vector<pair<int,int>>coords, int type){
 
+    int piece_found = 0; //max 4
+    bool all_found = false; //if 4 found 
+
+    //remove current ones 
+    for(int i = 0; i<BOARD_HEIGHT; ++i){
+        for(int j = 0; j<BOARD_WIDTH; ++j){
+            if(BOARD[i][j] > 1){
+                piece_found++;
+                BOARD[i][j] = 0;
+            }
+            if(piece_found == 4){
+                all_found = true;
+                break;
+            }
+        }
+        if(all_found) break;
+    }
+
+    //add new ones
+    for(pair<int,int>p:coords){
+        BOARD[p.first][p.second] = type;
+    }
+}
 #endif
