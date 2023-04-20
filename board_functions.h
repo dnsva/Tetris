@@ -9,16 +9,43 @@
 
 using namespace std;
 
+
+void init_board(){ //initialize all the bottom row to act like blocks (for collision)
+
+    for(int i = 1; i<BOARD_WIDTH-1; ++i){
+        BOARD[BOARD_HEIGHT-1][i] = 1;
+    }
+
+    //make edges off-limit so -1
+    for(int i = 1; i<BOARD_WIDTH-1; ++i){
+        BOARD[0][i] = -1;
+    }
+    for(int i = 1; i<BOARD_HEIGHT-1; ++i){
+        BOARD[i][0] = -1;
+    }
+    for(int i = 1; i<BOARD_HEIGHT-1; ++i){
+        BOARD[i][BOARD_WIDTH-1] = -1;
+    }
+
+}
+
+void clear_board(){
+    //Reset EVERYTHING 
+}
+
 void draw_board(){
     //DRAW BORDERS & COLORR
+    clear(); //clear everything before just in case 
     for (int i = 0; i < BOARD_HEIGHT; i++) {
 
         int j2 = 0;
 
         for (int j = 0; j < BOARD_WIDTH; j++) {
+                
             
+
             int color = BOARD[i][j];
-            if (color > 0) {
+            if (color > 0 && i != BOARD_HEIGHT-1) {
                 attron(COLOR_PAIR(color));
                 
                 //char const* u = "\u25A1";
@@ -36,18 +63,13 @@ void draw_board(){
                 //wprintw(stdscr, "%lc\n", mychar);
                 //mvprintw(i, j, "□");
                 attroff(COLOR_PAIR(color));
+            }else{
+               // attrset(A_NORMAL); //reset everything just in case 
+                mvprintw(i, j2, "  ");
             }
-            
-            if (i == 0 || i == BOARD_HEIGHT-1 || j == 0 || j == BOARD_WIDTH-1) {
-                mvprintw(i, j, "#");
-            } else {
 
-                if(BOARD[i][j] != 0){
-                    
-                }else{
-                    mvprintw(i, j2, "  ");
-                }
-                
+            if (i == 0 || i == BOARD_HEIGHT-1 || j == 0 || j == BOARD_WIDTH-1) {
+                mvprintw(i, j2, "##");
             }
 
             j2 += 2;

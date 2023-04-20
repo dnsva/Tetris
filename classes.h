@@ -8,7 +8,7 @@
 using namespace std;
 
 const int BOARD_WIDTH = 20;
-const int BOARD_HEIGHT = 20;
+const int BOARD_HEIGHT = 30;
 
 int SCORE = 0;
 
@@ -105,15 +105,20 @@ struct block{
         }
 
         //check if valid
-       //if(check_valid_pos(new_coords)){
+       if(check_valid_pos(new_coords)){
             coords = {new_coords};
             update_block_pos(coords, type);
-       // }
+        }
     }
     bool check_collision(){
-       //check if it has collided with the board 
-
-       return false; //if it has collided 
+       //check if it has collided with the board
+       for(pair<int,int>p:coords){
+        if(BOARD[p.first+1][p.second] == 1){
+            type = 1;
+            return true;
+        }
+       }
+       return false; //otherwise if no collision
     }
     void move_DOWN(){
         vector<pair<int,int>>new_coords(coords);
@@ -122,10 +127,10 @@ struct block{
             new_coords[i].first++;
         }
         
-        //if(check_valid_pos(new_coords)){
+        if(check_valid_pos(new_coords)){
             coords = {new_coords};
             update_block_pos(coords, type);
-        //}
+        }
     }
     void move_LEFT(){
         vector<pair<int,int>>new_coords(coords);
@@ -136,10 +141,11 @@ struct block{
             new_coords[i].second--;
         }
         
-        //if(check_valid_pos(new_coords)){
+        //printw("CHECK VALID IS, %d", check_valid_pos(new_coords));
+        if(check_valid_pos(new_coords)){
             coords = {new_coords};
             update_block_pos(coords, type);
-        //}
+        }
     }
     void move_RIGHT(){
         vector<pair<int,int>>new_coords(coords);
@@ -148,10 +154,10 @@ struct block{
             new_coords[i].second++;
         }
         
-        //if(check_valid_pos(new_coords)){
+        if(check_valid_pos(new_coords)){
             coords = {new_coords};
             update_block_pos(coords, type);
-        //}
+        }
     }
 
 
@@ -160,9 +166,21 @@ struct block{
 
 bool check_valid_pos(vector<pair<int,int>>curr_coords){ //check if B is in valid position on board
     
-    int row, col;
+    //int row, col;
 
     for(pair<int,int>pos:curr_coords){
+
+        if(pos.first <= -1 || pos.second <= -1){
+            return false;
+        }
+
+        if(pos.first < 1 || pos.first > BOARD_HEIGHT-2){
+            return false;
+        }
+        if(pos.second < 1 || pos.second > BOARD_WIDTH-2){
+            return false;
+        }
+        /*
         row = pos.first;
         col = pos.second;
         if(row < 1 || row > BOARD_HEIGHT-2){
@@ -174,6 +192,7 @@ bool check_valid_pos(vector<pair<int,int>>curr_coords){ //check if B is in valid
         if(BOARD[row][col] != 0){
             return false;
         }
+        */
     }
    
     return true;

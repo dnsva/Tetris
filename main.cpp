@@ -39,6 +39,7 @@ int main(){
 
 
     // define the color pairs for each block type
+	init_pair(1, COLOR_WHITE, COLOR_BLACK);
     init_pair(2, COLOR_RED, COLOR_BLACK);
     init_pair(3, COLOR_GREEN,COLOR_BLACK);
     init_pair(4, COLOR_YELLOW, COLOR_BLACK);
@@ -46,7 +47,7 @@ int main(){
     init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(7, COLOR_CYAN, COLOR_BLACK);
 	init_color(100, 500, 0, 500); // defines a purple color
-	init_pair(7, 100, COLOR_BLACK); //purple
+	init_pair(8, 100, COLOR_BLACK); //purple
 
 
 	refresh();
@@ -116,7 +117,8 @@ bool menu(){ //true if we want to quit
 	
 
 	if(choice == 0){ //PLAY
-		
+		clear_board();
+		init_board();
 		while(1){
 			bool is_done = loop();
 			if(is_done){
@@ -149,12 +151,14 @@ bool loop(){ //true when game is doen
 		if(is_game_over){
 			return true; //game is over 
 		}
+		*/
 		//see if collision happened 
 		//if yes make piece to 1s so as if it does not exist
 		if(ACTIVE_PIECE.check_collision()){
+			add_block(ACTIVE_PIECE); //rewrite this pos with 1s 
 			return false; //this turn is OVER 
 		}
-		*/
+		
 		// check for user input
         int ch = getch();
         switch (ch) {
@@ -170,6 +174,18 @@ bool loop(){ //true when game is doen
                 break;
             case KEY_UP:
                 ACTIVE_PIECE.rotate_block();
+                break;
+			case 'a': //left alternative
+				ACTIVE_PIECE.move_LEFT();
+                break;
+			case 'd': //right alternative
+				ACTIVE_PIECE.move_RIGHT();
+                break;
+			case 's': //down alternative
+				ACTIVE_PIECE.move_DOWN();
+                break;
+			case 'w': //rotate alternative
+				ACTIVE_PIECE.rotate_block();
                 break;
             case 'q':
                 endwin();
