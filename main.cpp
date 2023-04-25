@@ -63,7 +63,7 @@ int main(){
 		return 0;
 	}
 
-	getch();			
+	//getch();			
 	endwin();	
 
 
@@ -72,7 +72,7 @@ int main(){
 }
 
 bool menu(){ //true if we want to quit 
-
+	clear(); //clear screen
 	printw("WELCOME TO TETRIS...\nWHAT DO YOU WANT TO DO?\n");
 	int choice;
 	string options[] = {"PLAY", "HOW TO", "QUIT"};
@@ -92,6 +92,7 @@ bool menu(){ //true if we want to quit
             choice = (choice + 3) % 3;
         }
         else if (c == 10){
+			
             attron(A_BOLD);
             attron(A_STANDOUT);
             mvprintw(choice+1, 0, "%d. %s?\n", choice+1, options[choice].c_str());
@@ -112,23 +113,38 @@ bool menu(){ //true if we want to quit
             }
         }
     }
-	clear(); //clear the screen 
+	//clear(); //clear the screen 
 	attrset(A_NORMAL); //reset any highlighted stuff
 	
 
 	if(choice == 0){ //PLAY
 		clear_board();
-		init_board();
+		//init_board();
 		while(1){
 			bool is_done = loop();
 			if(is_done){
 				break;
 			}
 		}
-		printw("YOUR SCORE WAS %d\n", SCORE);
+		//printw("YOUR SCORE WAS %d\n", SCORE);
 	}else if(choice == 1){ //RULES
-		printw("RULES:\n");
-		printw("ASJDFKSDHFKJSDF\n");
+
+		clear();
+	
+		mvprintw(1, 0, "HOW TO PLAY:\n");
+
+		mvprintw(2, 0, "TRY TO GET AS MANY POINTS AS POSSIBLE.\n");
+		mvprintw(3, 0, "CONTROLS FOR TETRIS BLOCKS:\n");
+		mvprintw(4, 0, "     ---                 ---            \n");  
+		mvprintw(5, 0, "    | W |               | ^ |           \n");
+		mvprintw(6, 0, "     ---       OR        ---            \n");
+		mvprintw(7, 0, " --- --- ---         --- --- ---        \n");
+		mvprintw(8, 0, "| A | S | D |       | < | v | > |       \n");
+		mvprintw(9, 0, " --- --- ---         --- --- ---        \n");
+		printw("You can close your current game at any time by pressing 'q'\n\n");
+		printw("[PRESS ANY KEY TO CLOSE THIS WINDOW]\n");
+		int ch = getch();
+
 	}else{ //QUIT
 		return true;
 	}
@@ -138,26 +154,20 @@ bool menu(){ //true if we want to quit
 }
 bool loop(){ //true when game is doen 
 
+	clear_rows(); //clear rows if anything is full 
+
 	block ACTIVE_PIECE;
-	ACTIVE_PIECE.generate_block();
+	//ACTIVE_PIECE.generate_block();
 	ACTIVE_PIECE.generate_block();
 	
 	add_block(ACTIVE_PIECE);
 	draw_board();
 
 	while(1){
-		//see if game over
-		/*bool is_game_over = check_game_over();
-		if(is_game_over){
-			return true; //game is over 
-		}
-		*/
-		//see if collision happened 
-		//if yes make piece to 1s so as if it does not exist
-		if(ACTIVE_PIECE.check_collision()){
-			add_block(ACTIVE_PIECE); //rewrite this pos with 1s 
-			return false; //this turn is OVER 
-		}
+
+		
+		
+		
 		
 		// check for user input
         int ch = getch();
@@ -191,9 +201,22 @@ bool loop(){ //true when game is doen
                 endwin();
                 return true;
 		}
+
+		//see if collision happened 
+		//if yes make piece to 1s so as if it does not exist
+		if(ACTIVE_PIECE.check_collision()){
+			add_block(ACTIVE_PIECE); //rewrite this pos with 1s 
+			//draw_board();
+			return false; //this turn is OVER 
+		}
 		draw_board();
 
-		//clear_rows(); //clear rows if anything is full 
+		//see if game over
+		bool is_game_over = check_game_over();
+		if(is_game_over){
+			endwin();
+			return true; //game is over 
+		}
 
 
 	}

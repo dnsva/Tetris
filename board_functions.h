@@ -12,10 +12,16 @@ using namespace std;
 
 void init_board(){ //initialize all the bottom row to act like blocks (for collision)
 
+    for(int i = 0; i<BOARD_HEIGHT; ++i){
+        for(int j = 0; j<BOARD_WIDTH; ++j){
+            BOARD[i][j] = 0;
+        }
+    }
     for(int i = 1; i<BOARD_WIDTH-1; ++i){
         BOARD[BOARD_HEIGHT-1][i] = 1;
     }
 
+    /*
     //make edges off-limit so -1
     for(int i = 1; i<BOARD_WIDTH-1; ++i){
         BOARD[0][i] = -1;
@@ -25,17 +31,20 @@ void init_board(){ //initialize all the bottom row to act like blocks (for colli
     }
     for(int i = 1; i<BOARD_HEIGHT-1; ++i){
         BOARD[i][BOARD_WIDTH-1] = -1;
-    }
+    }*/
 
 }
 
 void clear_board(){
     //Reset EVERYTHING 
+    init_board();
+    SCORE = 0;
 }
 
 void draw_board(){
     //DRAW BORDERS & COLORR
     clear(); //clear everything before just in case 
+
     for (int i = 0; i < BOARD_HEIGHT; i++) {
 
         int j2 = 0;
@@ -65,18 +74,43 @@ void draw_board(){
                 attroff(COLOR_PAIR(color));
             }else{
                // attrset(A_NORMAL); //reset everything just in case 
+               attroff(COLOR_PAIR(color));
                 mvprintw(i, j2, "  ");
             }
 
             if (i == 0 || i == BOARD_HEIGHT-1 || j == 0 || j == BOARD_WIDTH-1) {
-                mvprintw(i, j2, "##");
+
+                if(i == 0 && j == 0){
+                    mvprintw(i, j2," ╔");
+                }else if(i == 0 && j == BOARD_WIDTH-1){
+                    mvprintw(i, j2,"╗ ");
+                }else if(i == BOARD_HEIGHT-1 && j == 0){
+                    mvprintw(i, j2," ╚");
+                }else if(i == BOARD_HEIGHT-1 && j == BOARD_WIDTH-1){
+                    mvprintw(i, j2,"╝ ");
+                }else if(i == 0 || i == BOARD_HEIGHT-1){
+                    mvprintw(i, j2,"══");
+                }else{
+                    if(j == 0){
+                        mvprintw(i, j2, " ║"); 
+                    }else{
+                        mvprintw(i, j2, "║ "); 
+                    }
+                    
+                }
+                //mvprintw(i, j2, "##");
             }
 
             j2 += 2;
 
             
+
+            
         }
     }
+
+    mvprintw(1, BOARD_WIDTH*2 + 1, "SCORE: %d", SCORE);
+
 }
 
 void add_block(block B){ //add block to board
@@ -88,6 +122,7 @@ void add_block(block B){ //add block to board
 void clear_rows(){ //clear full rows
 
     int rows_cleared_num = 0;
+
     for (int i = BOARD_HEIGHT-2; i > 0; --i){
         // check if the row is full
         bool is_full = true;
@@ -102,7 +137,7 @@ void clear_rows(){ //clear full rows
             rows_cleared_num++;
             for (int k = i; k > 0; k--) {
                 for (int j = 1; j < BOARD_WIDTH-1; j++) {
-                BOARD[k][j] = BOARD[k-1][j];
+                    BOARD[k][j] = BOARD[k-1][j];
                 }
             }
             // set the top row to all zeros
@@ -111,12 +146,16 @@ void clear_rows(){ //clear full rows
             }
             // redraw the board
             draw_board();
+
+            //another full row could have moved down so ++i to recheck row in case
+            ++i;
         }
     }
+
     // if any rows were cleared, update the score
     if (rows_cleared_num > 0) {
         SCORE += rows_cleared_num * 10;
-        mvprintw(BOARD_HEIGHT+2, 2, "Score: %d", SCORE);
+        //mvprintw(BOARD_HEIGHT+2, 2, "Score: %d", SCORE);
     }
 
 
@@ -126,6 +165,11 @@ bool check_game_over(){
     //check if the first row has blocks
     for (int j = 1; j < BOARD_WIDTH-1; j++) {
         if (BOARD[1][j] == 1) {
+
+            printw("GAME OVER.\n");
+            printw("YOUR SCORE WAS: %d\n", SCORE);
+            printw("\n[To close this window press any key]\n");
+            int ch = getch();
             return true;
         }
     }
@@ -133,3 +177,4 @@ bool check_game_over(){
 }
 
 #endif
+

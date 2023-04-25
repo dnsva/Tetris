@@ -7,8 +7,8 @@
 
 using namespace std;
 
-const int BOARD_WIDTH = 20;
-const int BOARD_HEIGHT = 30;
+const int BOARD_WIDTH = 10;
+const int BOARD_HEIGHT = 20;
 
 int SCORE = 0;
 
@@ -114,12 +114,13 @@ struct block{
        //check if it has collided with the board
        for(pair<int,int>p:coords){
         if(BOARD[p.first+1][p.second] == 1){
-            type = 1;
+            this->type = 1;
             return true;
         }
        }
        return false; //otherwise if no collision
     }
+
     void move_DOWN(){
         vector<pair<int,int>>new_coords(coords);
 
