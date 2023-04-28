@@ -75,7 +75,7 @@ int main(){
 
 bool menu(){ //true if we want to quit 
 	clear(); //clear screen
-	printw("WELCOME TO TETRIS...\nWHAT DO YOU WANT TO DO?\n");
+	printw("WHAT DO YOU WANT TO DO?\n");
 	int choice = 0;
 	string options[] = {"PLAY", "HOW TO", "QUIT"};
 	while(true){
@@ -148,7 +148,9 @@ bool menu(){ //true if we want to quit
 		mvprintw(7, 0, " --- --- ---         --- --- ---        \n");
 		mvprintw(8, 0, "| A | S | D |       | < | v | > |       \n");
 		mvprintw(9, 0, " --- --- ---         --- --- ---        \n");
-		printw("You can close your current game at any time by pressing 'q'\n\n");
+		printw("\nVERY IMPORTANT - IF YOU ARE UNABLE TO ROTATE, IT IS BECAUSE \nROTATING THE BLOCK MAKES IT GO OUT OF BOUNDS. THIS MEANS YOU \nMIGHT HAVE TO MOVE IT A SPACE LEFT OR RIGHT BEFORE ROTATING.\n");
+		printw("\nYou can close your current game at any time by pressing 'q'\n\n");
+
 		printw("[PRESS ANY KEY TO CLOSE THIS WINDOW]\n");
 		int ch = getch();
 
@@ -312,7 +314,7 @@ void ascii(){
 	printw("   |  '.'    \`''-...... -'      |  '.'| |       .'.'.-'  /  \n");
 	printw("   |   /                        |   / |_|       .'   \\_.'   \n");
 	printw("   \`'-'                         \`'-'                        \n");
-
+	printw("By Anna Denisova, 2023\n\n");
 	printw("[To continue press any key]\n");
 	int c = getch();
 	
