@@ -7,15 +7,17 @@
 
 using namespace std;
 
-const int BOARD_WIDTH = 10;
-const int BOARD_HEIGHT = 20;
+int BOARD_WIDTH = 10;
+int BOARD_HEIGHT = 20;
+
+int DIFFICULTY = 0; //0 - easy, 1 - med, 2 - hard, 3 - impossible
 
 int SCORE = 0;
 
 bool check_valid_pos(vector<pair<int,int>>curr_coords);
 void update_block_pos(vector<pair<int,int>>coords, int type);
 
-int BOARD[BOARD_HEIGHT][BOARD_WIDTH] = {}; //[r][c]
+int BOARD[100][100] = {}; //[r][c]
 
 struct block{
 
@@ -23,68 +25,69 @@ struct block{
     int type = 0;
 
     void generate_block(){
+        int c = BOARD_WIDTH/2; //col num (will store center)
         int selection = rand()%7 + 1;
         switch(selection){
             case 1: //I BLOCK
                 this->coords = {
-                    {1,3},
-                    {1,4},
-                    {1,5},
-                    {1,6}
+                    {1,c-2},
+                    {1,c-1},
+                    {1,c},
+                    {1,c+1}
                 };
                 this->type = 2;
                 break;
             case 2: //J BLOCK
                 this->coords = {
-                    {1,5},
-                    {2,5},
-                    {3,4},
-                    {3,5}
+                    {1,c},
+                    {2,c},
+                    {3,c-1},
+                    {3,c}
                 };
                 this->type = 3;
                 break;
             case 3: //L BLOCK
                 this->coords = {
-                    {1,5},
-                    {2,5},
-                    {3,5},
-                    {3,6}
+                    {1,c},
+                    {2,c},
+                    {3,c},
+                    {3,c+1}
                 };
                 this->type = 4;
                 break;
             case 4: //Z BLOCK
                 this->coords = {
-                    {1,4},
-                    {1,5},
-                    {2,5},
-                    {2,6}
+                    {1,c-1},
+                    {1,c},
+                    {2,c},
+                    {2,c+1}
                 };
                 this->type = 5;
                 break;
             case 5: //S BLOCK
                 this->coords = {
-                    {1,5},
-                    {1,6},
-                    {2,4},
-                    {2,5}
+                    {1,c},
+                    {1,c+1},
+                    {2,c-1},
+                    {2,c}
                 };
                 this->type = 6;
                 break;
             case 6: //T BLOCK
                 this->coords = {
-                    {1,4},
-                    {1,5},
-                    {1,6},
-                    {2,5}
+                    {1,c-1},
+                    {1,c},
+                    {1,c+1},
+                    {2,c}
                 };
                 this->type = 7;
                 break;
             case 7: //O BLOCK
                 this->coords = {
-                    {1,4},
-                    {1,5},
-                    {2,4},
-                    {2,5}
+                    {1,c-1},
+                    {1,c},
+                    {2,c-1},
+                    {2,c}
                 };
                 this->type = 8;
                 break;
@@ -102,6 +105,7 @@ struct block{
             int tmp_y = new_coords[i].second;
             new_coords[i].first = cx + (tmp_y - cy);
             new_coords[i].second = cy - (tmp_x - cx);
+
         }
 
         //check if valid

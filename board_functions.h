@@ -6,6 +6,7 @@
 #include <ncurses.h>
 #include <vector>
 #include <utility>
+#include "score.h"
 
 using namespace std;
 
@@ -110,6 +111,7 @@ void draw_board(){
     }
 
     mvprintw(1, BOARD_WIDTH*2 + 1, "SCORE: %d", SCORE);
+    mvprintw(2, BOARD_WIDTH*2 + 1, "HIGH SCORE: %d", read_score(DIFFICULTY));
 
 }
 
@@ -164,17 +166,34 @@ void clear_rows(){ //clear full rows
 bool check_game_over(){
     //check if the first row has blocks
     for (int j = 1; j < BOARD_WIDTH-1; j++) {
-        if (BOARD[1][j] == 1) {
-
+        if (BOARD[1][j] == 1 ) {
+            clear();
             printw("GAME OVER.\n");
             printw("YOUR SCORE WAS: %d\n", SCORE);
-            printw("\n[To close this window press any key]\n");
+            printw("\n[To close press any key]\n");
             int ch = getch();
+            mvprintw(3, 0, "[To confirm again to close press any key]\n");
+            ch = getch();
+            mvprintw(3, 0, "[To FOR SURE confirm again to close press any key]\n");
+            ch = getch();
             return true;
         }
     }
     return false;
 }
+
+/*
+
+bool check_game_over(const std::vector<std::vector<int>>& board) {
+    // Check if any blocks in the top row of the board are occupied
+    for (int i = 0; i < board[0].size(); i++) {
+        if (board[0][i] != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+*/
 
 #endif
 

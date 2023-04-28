@@ -11,16 +11,16 @@ using namespace std;
 #include <time.h>
 #include "classes.h"
 #include "board_functions.h"
+#include "score.h"
 #include <chrono>
 #include <thread>
 
 bool menu();
 void ascii();
 bool loop();
+void choose_difficulty();
 
 int main(){	
-
-	//ascii(); //ascii art needs to be fixed :(
 
 	// initialize ncurses
 	//setenv("LINES","100",1); //make lines thinner
@@ -33,7 +33,9 @@ int main(){
     start_color();
 	//printw("\033[3;1]"); //resize
     // set the seed for the random number generator
-    srand(time(NULL));	
+    srand(time(NULL));
+
+	ascii(); //ascii art needs to be fixed :(
 
 	clear(); //clear the screen
 
@@ -74,7 +76,7 @@ int main(){
 bool menu(){ //true if we want to quit 
 	clear(); //clear screen
 	printw("WELCOME TO TETRIS...\nWHAT DO YOU WANT TO DO?\n");
-	int choice;
+	int choice = 0;
 	string options[] = {"PLAY", "HOW TO", "QUIT"};
 	while(true){
         for (int i = 0; i < 3; i++){ //print list of options
@@ -89,7 +91,7 @@ bool menu(){ //true if we want to quit
             choice = (choice + 1) % 3;
         }
         else if (c == KEY_UP){
-            choice = (choice + 3) % 3;
+            choice = (choice + 2) % 3;
         }
         else if (c == 10){
 			
@@ -118,6 +120,7 @@ bool menu(){ //true if we want to quit
 	
 
 	if(choice == 0){ //PLAY
+		choose_difficulty();
 		clear_board();
 		//init_board();
 		while(1){
@@ -127,6 +130,10 @@ bool menu(){ //true if we want to quit
 			}
 		}
 		//printw("YOUR SCORE WAS %d\n", SCORE);
+
+		if(SCORE > read_score(DIFFICULTY)){ //if high score was beat
+			write_score(SCORE, DIFFICULTY); //update 
+		}
 	}else if(choice == 1){ //RULES
 
 		clear();
@@ -165,8 +172,30 @@ bool loop(){ //true when game is doen
 
 	while(1){
 
+		//see if game is over
+		bool is_game_over = check_game_over();
+		if(is_game_over){
+			//endwin();
+			return true; //game is over 
+		}
 		
-		
+		//see if collision happened 
+		//if yes make piece to 1s so as if it does not exist
+		if(ACTIVE_PIECE.check_collision()){
+			add_block(ACTIVE_PIECE); //rewrite this pos with 1s 
+			//draw_board();
+			//see if game over
+			/*
+			bool is_game_over = check_game_over();
+			if(is_game_over){
+				endwin();
+				return true; //game is over 
+			}
+			*/
+			return false; //this turn is OVER 
+			
+		}
+		draw_board();
 		
 		
 		// check for user input
@@ -202,30 +231,76 @@ bool loop(){ //true when game is doen
                 return true;
 		}
 
-		//see if collision happened 
-		//if yes make piece to 1s so as if it does not exist
-		if(ACTIVE_PIECE.check_collision()){
-			add_block(ACTIVE_PIECE); //rewrite this pos with 1s 
-			//draw_board();
-			return false; //this turn is OVER 
-		}
-		draw_board();
-
-		//see if game over
-		bool is_game_over = check_game_over();
-		if(is_game_over){
-			endwin();
-			return true; //game is over 
-		}
-
+		
 
 	}
 	
 
 }
-
+void choose_difficulty(){
+	clear();
+	printw("CHOOSE DIFFICULTY\n");
+	int choice = 0;
+	string options[] = {"EASY", "MEDIUM", "HARD", "IMPOSSIBLE"};
+	while(true){
+        for (int i = 0; i < 4; i++){ //print list of options
+            if (i == choice){
+                attron(A_STANDOUT);// highlight the chosen option
+            }
+            mvprintw(i+1,0,"%d. %s\n", i+1, options[i].c_str());
+			if(i == 1){
+				mvprintw(i+1,0,"%d. %s\n", i+1, "MEDIUM (recommended)");
+			}
+            attroff(A_STANDOUT);
+        }
+        int c = getch();
+        if (c == KEY_DOWN){
+            choice = (choice + 1) % 4;
+        }
+        else if (c == KEY_UP){
+            choice = (choice + 3) % 4;
+        }
+        else if (c == 10){
+			
+            attron(A_BOLD);
+            attron(A_STANDOUT);
+            mvprintw(choice+1, 0, "%d. %s?\n", choice+1, options[choice].c_str());
+            int confirm = getch();
+            if(confirm == 10){
+                this_thread::sleep_for(chrono::milliseconds(500));
+                endwin();
+                break;
+            }else{
+                attroff(A_BOLD);
+                attroff(A_STANDOUT);
+                if (confirm == KEY_DOWN){
+                    choice = (choice + 1) % 3;
+                }
+                else if (confirm == KEY_UP){
+                    choice = (choice + 3) % 3;
+                }
+            }
+        }
+    }
+	//clear(); //clear the screen 
+	attrset(A_NORMAL); //reset any highlighted stuff
+	DIFFICULTY = choice;
+	if(choice == 0){ //easy
+		BOARD_WIDTH = 20;
+		BOARD_HEIGHT = 30;
+	}else if(choice == 1){ //med
+		BOARD_WIDTH = 10;
+		BOARD_HEIGHT = 20;
+	}else if(choice == 2){ //hard
+		BOARD_WIDTH = 7;
+		BOARD_HEIGHT = 15;
+	}else if(choice == 3){ //impossible
+		BOARD_WIDTH = 6;
+		BOARD_HEIGHT = 12;
+	}
+}
 void ascii(){      
-/*
+
 	printw("               __.....__                      .--.     \n");     
 	printw("           .-''         '.                    |__|       \n");   
 	printw("     .|   /     .-''\"'-.  \`.      .|  .-,.--. .--.       \n");   
@@ -237,7 +312,11 @@ void ascii(){
 	printw("   |  '.'    \`''-...... -'      |  '.'| |       .'.'.-'  /  \n");
 	printw("   |   /                        |   / |_|       .'   \\_.'   \n");
 	printw("   \`'-'                         \`'-'                        \n");
-*/
+
+	printw("[To continue press any key]\n");
+	int c = getch();
+	
+/*
 	cout<<"               __.....__                      .--.     \n";     
 	cout<<"           .-''         '.                    |__|       \n";   
 	cout<<"     .|   /     .-''\"'-.  \`.      .|  .-,.--. .--.       \n";   
@@ -249,7 +328,7 @@ void ascii(){
 	cout<<"   |  '.'    \`''-...... -'      |  '.'| |       .'.'.-'  /  \n";
 	cout<<"   |   /                        |   / |_|       .'   \\_.'   \n";
 	cout<<"   \`'-'                         \`'-'                        \n";
-
-	this_thread::sleep_for(chrono::milliseconds(7000));
+*/
+//	this_thread::sleep_for(chrono::milliseconds(7000));
 
 }
