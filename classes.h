@@ -1,23 +1,23 @@
-#ifndef CLASSES_H
-#define CLASSES_H
+#ifndef CLASSES_H //guard
+#define CLASSES_H //guard
 
-#include <iostream>
-#include <vector>
-#include <utility>
+#include <iostream> //cout
+#include <vector>   //vector
+#include <utility>  //pair
 
-using namespace std;
+using namespace std; //less typing
 
-int BOARD_WIDTH = 10;
-int BOARD_HEIGHT = 20;
+int BOARD_WIDTH = 10;  //width of board
+int BOARD_HEIGHT = 20; //height of board 
 
 int DIFFICULTY = 0; //0 - easy, 1 - med, 2 - hard, 3 - impossible
 
-int SCORE = 0;
+int SCORE = 0; //score
+int BOARD[100][100] = {}; //THE BOARD
 
-bool check_valid_pos(vector<pair<int,int>>curr_coords);
-void update_block_pos(vector<pair<int,int>>coords, int type);
-
-int BOARD[100][100] = {}; //[r][c]
+//FUNCTIONS
+bool check_valid_pos(vector<pair<int,int>>curr_coords); //checks if valid
+void update_block_pos(vector<pair<int,int>>coords, int type); //updates block pos 
 
 struct block{
 

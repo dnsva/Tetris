@@ -1,145 +1,140 @@
+/* name - Anna Denisova
+   date - April 23
+   title - TETRIS
+   desc - Tetris game playable in terminal
+*/
 
+#include <iostream>  //output
+#include <ncurses.h> //keys
+#include <vector>    //vector lists
+#include <utility>   //pair
+#include <stdlib.h>  //standard library
+#include <time.h>    //for random
 
-#include <iostream>
+#include "classes.h" //structs
+#include "board_functions.h" //functions for board
+#include "score.h" //files 
 
-using namespace std;
+using namespace std; //less typing 
 
-#include <ncurses.h>
-#include <vector>
-#include <utility>
-#include <stdlib.h>
-#include <time.h>
-#include "classes.h"
-#include "board_functions.h"
-#include "score.h"
-#include <chrono>
-#include <thread>
-
-bool menu();
-void ascii();
-bool loop();
-void choose_difficulty();
+//FUNCTIONS ------------------
+bool menu();                //
+void ascii();               //
+bool loop();                //
+void choose_difficulty();   //
+//----------------------------
 
 int main(){	
 
-	// initialize ncurses
-	//setenv("LINES","100",1); //make lines thinner
+	//INITIALIZE NCURSES:
 	setlocale(LC_ALL, ""); //enable utf-8
-    initscr();
-    cbreak();
-    noecho();
-    curs_set(0);
-    keypad(stdscr, TRUE);
-    start_color();
-	//printw("\033[3;1]"); //resize
-    // set the seed for the random number generator
-    srand(time(NULL));
+    initscr();             //initialize screen
+    cbreak();              //other ncurses initialization
+    noecho();              //other ncurses initialization
+    curs_set(0);           //set cursor pos
+    keypad(stdscr, TRUE);  //set to standard screen output
+    start_color();         //enable color 
 
-	ascii(); //ascii art needs to be fixed :(
+    srand(time(NULL)); //for random num
+
+	ascii(); //ascii art
 
 	clear(); //clear the screen
 
-
     // define the color pairs for each block type
-	init_pair(1, COLOR_WHITE, COLOR_BLACK);
-    init_pair(2, COLOR_RED, COLOR_BLACK);
-    init_pair(3, COLOR_GREEN,COLOR_BLACK);
-    init_pair(4, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(5, COLOR_BLUE, COLOR_BLACK);
-    init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(7, COLOR_CYAN, COLOR_BLACK);
-	init_color(100, 500, 0, 500); // defines a purple color
-	init_pair(8, 100, COLOR_BLACK); //purple
+	init_pair(1, COLOR_WHITE, COLOR_BLACK);   //1 = white
+    init_pair(2, COLOR_RED, COLOR_BLACK);     //2 = red
+    init_pair(3, COLOR_GREEN,COLOR_BLACK);    //3 = green
+    init_pair(4, COLOR_YELLOW, COLOR_BLACK);  //4 = yellow
+    init_pair(5, COLOR_BLUE, COLOR_BLACK);    //5 = blue
+    init_pair(6, COLOR_MAGENTA, COLOR_BLACK); //6 = magenta
+    init_pair(7, COLOR_CYAN, COLOR_BLACK);    //7 = cyan
+	init_color(100, 500, 0, 500);             //defines a purple color
+	init_pair(8, 100, COLOR_BLACK);           //8 = purple
 
+	refresh(); //send everything to screen
 
-	refresh();
-	//return 0;
-
-
-	bool quit = menu();
-	while(!quit){
-		quit = menu();
+	bool quit = menu(); //quitting returns 1
+	while(!quit){       //while not quitted
+		quit = menu();  //menu again
 	}
 
-	if(quit){
-		return 0;
+	if(quit){ //if done
+		return 0; //exit program
 	}
+		
+	endwin(); //end ncurses mode
 
-	//getch();			
-	endwin();	
-
-
-	
-	return 0;
+	return 0; //exit
 }
 
-bool menu(){ //true if we want to quit 
+//==========================================
+
+bool menu(){ //menu, return true if we want to quit
+
+	int choice = 0; //menu choice 
+	string options[] = {"PLAY", "HOW TO", "QUIT"}; //options for menu 
+	int c; //temp char var
+	int confirm; //temp confirm var
+
 	clear(); //clear screen
-	printw("WHAT DO YOU WANT TO DO?\n");
-	int choice = 0;
-	string options[] = {"PLAY", "HOW TO", "QUIT"};
-	while(true){
+
+	printw("WHAT DO YOU WANT TO DO?\n"); //ask
+	
+	while(true){ //loop 
         for (int i = 0; i < 3; i++){ //print list of options
-            if (i == choice){
+            if (i == choice){ //if i selected
                 attron(A_STANDOUT);// highlight the chosen option
             }
-            mvprintw(i+1,0,"%d. %s\n", i+1, options[i].c_str());
-            attroff(A_STANDOUT);
+            mvprintw(i+1,0,"%d. %s\n", i+1, options[i].c_str()); //print option
+            attroff(A_STANDOUT); //unhighlight 
         }
-        int c = getch();
-        if (c == KEY_DOWN){
-            choice = (choice + 1) % 3;
+        c = getch(); //get key
+        if (c == KEY_DOWN){ //if down arrow
+            choice = (choice + 1) % 3; //manip pos
+        }else if (c == KEY_UP){ //if up arrow
+            choice = (choice + 2) % 3; //manip pos 
         }
-        else if (c == KEY_UP){
-            choice = (choice + 2) % 3;
-        }
-        else if (c == 10){
-			
-            attron(A_BOLD);
-            attron(A_STANDOUT);
-            mvprintw(choice+1, 0, "%d. %s?\n", choice+1, options[choice].c_str());
-            int confirm = getch();
-            if(confirm == 10){
-                this_thread::sleep_for(chrono::milliseconds(500));
-                endwin();
-                break;
-            }else{
-                attroff(A_BOLD);
-                attroff(A_STANDOUT);
-                if (confirm == KEY_DOWN){
-                    choice = (choice + 1) % 3;
-                }
-                else if (confirm == KEY_UP){
-                    choice = (choice + 3) % 3;
+        else if (c == 10){ //enter key
+            attron(A_BOLD); //bold
+            attron(A_STANDOUT); //highlight
+            mvprintw(choice+1, 0, "%d. %s?\n", choice+1, options[choice].c_str()); //confirmation
+            confirm = getch(); //get again
+            if(confirm == 10){ //if enter again
+                endwin(); //close window
+                break; //get out of loop
+            }else{ //if decided to not confirm 
+                attroff(A_BOLD); //no bold
+                attroff(A_STANDOUT); //no highlight 
+                if (confirm == KEY_DOWN){ //if going down 
+                    choice = (choice + 1) % 3; //manip pos
+                }else if (confirm == KEY_UP){ //if going up
+                    choice = (choice + 3) % 3; //manip pos 
                 }
             }
         }
     }
-	//clear(); //clear the screen 
 	attrset(A_NORMAL); //reset any highlighted stuff
-	
 
 	if(choice == 0){ //PLAY
-		choose_difficulty();
-		clear_board();
-		//init_board();
-		while(1){
-			bool is_done = loop();
-			if(is_done){
-				break;
+		choose_difficulty(); //call fn
+		clear_board();       //clear everything before start
+		while(1){ //loop
+			bool is_done = loop(); //check if done 
+			if(is_done){ //if done 
+				break; //break out of loop
 			}
 		}
-		//printw("YOUR SCORE WAS %d\n", SCORE);
-
 		if(SCORE > read_score(DIFFICULTY)){ //if high score was beat
 			write_score(SCORE, DIFFICULTY); //update 
 		}
+
 	}else if(choice == 1){ //RULES
 
-		clear();
+		clear(); //clear screen
 	
+		/* the following code prints the rules */
 		mvprintw(1, 0, "HOW TO PLAY:\n");
-
 		mvprintw(2, 0, "TRY TO GET AS MANY POINTS AS POSSIBLE.\n");
 		mvprintw(3, 0, "CONTROLS FOR TETRIS BLOCKS:\n");
 		mvprintw(4, 0, "     ---                 ---            \n");  
@@ -150,159 +145,159 @@ bool menu(){ //true if we want to quit
 		mvprintw(9, 0, " --- --- ---         --- --- ---        \n");
 		printw("\nVERY IMPORTANT - IF YOU ARE UNABLE TO ROTATE, IT IS BECAUSE \nROTATING THE BLOCK MAKES IT GO OUT OF BOUNDS. THIS MEANS YOU \nMIGHT HAVE TO MOVE IT A SPACE LEFT OR RIGHT BEFORE ROTATING.\n");
 		printw("\nYou can close your current game at any time by pressing 'q'\n\n");
-
 		printw("[PRESS ANY KEY TO CLOSE THIS WINDOW]\n");
+
+		//for exiting:
 		int ch = getch();
 
 	}else{ //QUIT
-		return true;
+		return true; //exit
 	}
 
-	return false;
+	return false; //exit 
 
 }
-bool loop(){ //true when game is doen 
+
+//==========================================
+
+bool loop(){ //main game loop, returns true when game is done
+	
+	block ACTIVE_PIECE; //curr active piece
+	bool is_game_over; //stores whether or not game is over
+	int ch; //temp thing for input 
 
 	clear_rows(); //clear rows if anything is full 
 
-	block ACTIVE_PIECE;
-	//ACTIVE_PIECE.generate_block();
-	ACTIVE_PIECE.generate_block();
+	ACTIVE_PIECE.generate_block(); //generate type 
 	
-	add_block(ACTIVE_PIECE);
-	draw_board();
+	add_block(ACTIVE_PIECE); //add it to the board
+	draw_board(); //display the board
 
-	while(1){
+	while(1){ //loop 
 
 		//see if game is over
-		bool is_game_over = check_game_over();
-		if(is_game_over){
-			//endwin();
+		is_game_over = check_game_over(); //check 
+		if(is_game_over){ //if done
 			return true; //game is over 
 		}
 		
 		//see if collision happened 
 		//if yes make piece to 1s so as if it does not exist
-		if(ACTIVE_PIECE.check_collision()){
+		if(ACTIVE_PIECE.check_collision()){ //check
 			add_block(ACTIVE_PIECE); //rewrite this pos with 1s 
-			//draw_board();
-			//see if game over
-			/*
-			bool is_game_over = check_game_over();
-			if(is_game_over){
-				endwin();
-				return true; //game is over 
-			}
-			*/
 			return false; //this turn is OVER 
 			
 		}
-		draw_board();
+
+		draw_board(); //draw board 
 		
-		
-		// check for user input
-        int ch = getch();
-        switch (ch) {
-            case KEY_LEFT:
-                ACTIVE_PIECE.move_LEFT();
-				//printw("MOVED LEFT???\n");
-                break;
-            case KEY_RIGHT:
-                ACTIVE_PIECE.move_RIGHT();
-                break;
-            case KEY_DOWN:
-                ACTIVE_PIECE.move_DOWN();
-                break;
-            case KEY_UP:
-                ACTIVE_PIECE.rotate_block();
-                break;
+        ch = getch(); //check for user input 
+        switch (ch){ //switch on it 
+            case KEY_LEFT: //if left arrow pressed 
+                ACTIVE_PIECE.move_LEFT(); //call move 
+                break;  //break
+            case KEY_RIGHT: //if right arrow pressed 
+                ACTIVE_PIECE.move_RIGHT(); //call move 
+                break; //break
+            case KEY_DOWN: //if down arrow pressed 
+                ACTIVE_PIECE.move_DOWN(); //call move 
+                break; //break
+            case KEY_UP: //if up arrow pressed 
+                ACTIVE_PIECE.rotate_block(); //call move 
+                break; //break
 			case 'a': //left alternative
-				ACTIVE_PIECE.move_LEFT();
-                break;
+				ACTIVE_PIECE.move_LEFT(); //call move 
+                break; //break
 			case 'd': //right alternative
-				ACTIVE_PIECE.move_RIGHT();
-                break;
+				ACTIVE_PIECE.move_RIGHT(); //call move 
+                break; //break
 			case 's': //down alternative
-				ACTIVE_PIECE.move_DOWN();
-                break;
+				ACTIVE_PIECE.move_DOWN(); //call move 
+                break; //break
 			case 'w': //rotate alternative
-				ACTIVE_PIECE.rotate_block();
-                break;
-            case 'q':
-                endwin();
-                return true;
+				ACTIVE_PIECE.rotate_block(); //call move 
+                break; //break
+            case 'q': //if q pressed
+                endwin(); //end window
+                return true; //exit 
 		}
-
-		
-
 	}
-	
-
 }
-void choose_difficulty(){
-	clear();
-	printw("CHOOSE DIFFICULTY\n");
-	int choice = 0;
-	string options[] = {"EASY", "MEDIUM", "HARD", "IMPOSSIBLE"};
+
+//==========================================
+
+void choose_difficulty(){ //select difficulty menu 
+
+	int choice = 0; //menu choice
+	string options[] = {"EASY", "MEDIUM", "HARD", "IMPOSSIBLE"}; //options
+	int c; //temp char storage
+	int confirm; //temp confirm var 
+
+	clear(); //clear screen 
+	printw("CHOOSE DIFFICULTY\n"); //output 
+	
 	while(true){
         for (int i = 0; i < 4; i++){ //print list of options
-            if (i == choice){
+            if (i == choice){ //if we are on the current choice 
                 attron(A_STANDOUT);// highlight the chosen option
             }
-            mvprintw(i+1,0,"%d. %s\n", i+1, options[i].c_str());
-			if(i == 1){
-				mvprintw(i+1,0,"%d. %s\n", i+1, "MEDIUM (recommended)");
+            mvprintw(i+1,0,"%d. %s\n", i+1, options[i].c_str()); //print
+			if(i == 1){ //if medium 
+				mvprintw(i+1,0,"%d. %s\n", i+1, "MEDIUM (recommended)"); //mention that its recommended
 			}
-            attroff(A_STANDOUT);
+            attroff(A_STANDOUT); //highlight
         }
-        int c = getch();
-        if (c == KEY_DOWN){
-            choice = (choice + 1) % 4;
+        c = getch(); //get key input 
+        if (c == KEY_DOWN){ //if down arrow
+            choice = (choice + 1) % 4; //manip choice
         }
-        else if (c == KEY_UP){
-            choice = (choice + 3) % 4;
+        else if (c == KEY_UP){ //if up arrow
+            choice = (choice + 3) % 4; //manip choice 
         }
-        else if (c == 10){
-			
-            attron(A_BOLD);
-            attron(A_STANDOUT);
-            mvprintw(choice+1, 0, "%d. %s?\n", choice+1, options[choice].c_str());
-            int confirm = getch();
-            if(confirm == 10){
-                this_thread::sleep_for(chrono::milliseconds(500));
-                endwin();
-                break;
+        else if (c == 10){ //if enter key 
+            attron(A_BOLD); //bold it
+            attron(A_STANDOUT); //highlight it 
+            mvprintw(choice+1, 0, "%d. %s?\n", choice+1, options[choice].c_str()); //confirmation
+            confirm = getch(); //get input 
+            if(confirm == 10){ //if enter 2
+                endwin(); //end window
+                break; //get out
             }else{
-                attroff(A_BOLD);
-                attroff(A_STANDOUT);
-                if (confirm == KEY_DOWN){
-                    choice = (choice + 1) % 3;
+                attroff(A_BOLD); //disable bold
+                attroff(A_STANDOUT); //disable highlight 
+                if (confirm == KEY_DOWN){ //if down arrow
+                    choice = (choice + 1) % 3; //manip choice 
                 }
-                else if (confirm == KEY_UP){
-                    choice = (choice + 3) % 3;
+                else if (confirm == KEY_UP){ //if up arrow
+                    choice = (choice + 3) % 3; //manip choice 
                 }
             }
         }
     }
-	//clear(); //clear the screen 
+
 	attrset(A_NORMAL); //reset any highlighted stuff
-	DIFFICULTY = choice;
-	if(choice == 0){ //easy
-		BOARD_WIDTH = 20;
-		BOARD_HEIGHT = 30;
-	}else if(choice == 1){ //med
-		BOARD_WIDTH = 10;
-		BOARD_HEIGHT = 20;
-	}else if(choice == 2){ //hard
-		BOARD_WIDTH = 7;
-		BOARD_HEIGHT = 15;
-	}else if(choice == 3){ //impossible
-		BOARD_WIDTH = 6;
-		BOARD_HEIGHT = 12;
+
+	DIFFICULTY = choice;   //global var difficulty set 
+	if(choice == 0){       //EAST
+		BOARD_WIDTH = 20;  //set w
+		BOARD_HEIGHT = 30; //set h
+	}else if(choice == 1){ //MED
+		BOARD_WIDTH = 10;  //set w
+		BOARD_HEIGHT = 20; //set h
+	}else if(choice == 2){ //HARD
+		BOARD_WIDTH = 7;   //set w
+		BOARD_HEIGHT = 15; //set h
+	}else if(choice == 3){ //IMPOSSIBLE
+		BOARD_WIDTH = 6;   //set w
+		BOARD_HEIGHT = 12; //set h
 	}
 }
-void ascii(){      
 
+//==========================================
+
+void ascii(){ //prints ascii   
+
+	/* The following lines print ascii art */
 	printw("               __.....__                      .--.     \n");     
 	printw("           .-''         '.                    |__|       \n");   
 	printw("     .|   /     .-''\"'-.  \`.      .|  .-,.--. .--.       \n");   
@@ -316,21 +311,9 @@ void ascii(){
 	printw("   \`'-'                         \`'-'                        \n");
 	printw("By Anna Denisova, 2023\n\n");
 	printw("[To continue press any key]\n");
-	int c = getch();
-	
-/*
-	cout<<"               __.....__                      .--.     \n";     
-	cout<<"           .-''         '.                    |__|       \n";   
-	cout<<"     .|   /     .-''\"'-.  \`.      .|  .-,.--. .--.       \n";   
-	cout<<"   .' |_ /     /________\   \   .' |_ |  .-. ||  |        \n";  
-	cout<<" .'     ||                  | .'     || |  | ||  |     _    \n";
-	cout<<"'--.  .-'\\    .-------------''--.  .-'| |  | ||  |   .' |   \n";
-	cout<<"   |  |   \\    '-.____...---.   |  |  | |  '- |  |  .   | / \n";
-	cout<<"   |  |    \`.             .'    |  |  | |     |__|.'.'| |/\/ \n";
-	cout<<"   |  '.'    \`''-...... -'      |  '.'| |       .'.'.-'  /  \n";
-	cout<<"   |   /                        |   / |_|       .'   \\_.'   \n";
-	cout<<"   \`'-'                         \`'-'                        \n";
-*/
-//	this_thread::sleep_for(chrono::milliseconds(7000));
-
+	int c = getch(); //to end 
 }
+
+//==========================================
+
+
