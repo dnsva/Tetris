@@ -86,6 +86,12 @@ void draw_board(){ //draw the board
     mvprintw(1, BOARD_WIDTH*2 + 1, "SCORE: %d", SCORE); //print score
     mvprintw(2, BOARD_WIDTH*2 + 1, "HIGH SCORE: %d", read_score(DIFFICULTY)); //print highscore
 
+    mvprintw(BOARD_HEIGHT-6, BOARD_WIDTH*2 + 1, "CONTROLS"); //print control
+    mvprintw(BOARD_HEIGHT-5, BOARD_WIDTH*2 + 1, "^ OR W - rotate"); //print control
+    mvprintw(BOARD_HEIGHT-4, BOARD_WIDTH*2 + 1, "< OR A - left"); //print control
+    mvprintw(BOARD_HEIGHT-3, BOARD_WIDTH*2 + 1, "V OR S - down"); //print control
+    mvprintw(BOARD_HEIGHT-2, BOARD_WIDTH*2 + 1, "> OR D - right"); //print control
+    
 }
 
 void add_block(block B){ //add block to board

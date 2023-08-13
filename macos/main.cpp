@@ -79,7 +79,7 @@ bool menu(){ //menu, return true if we want to quit
 
 	clear(); //clear screen
 
-	printw("WHAT DO YOU WANT TO DO?\n"); //ask
+	printw("WHAT DO YOU WANT TO DO? (up/down to move, enter key to select, enter key again to confirm choice)\n"); //ask
 	
 	while(true){ //loop 
         for (int i = 0; i < 3; i++){ //print list of options
@@ -143,7 +143,7 @@ bool menu(){ //menu, return true if we want to quit
 		mvprintw(7, 0, " --- --- ---         --- --- ---        \n");
 		mvprintw(8, 0, "| A | S | D |       | < | v | > |       \n");
 		mvprintw(9, 0, " --- --- ---         --- --- ---        \n");
-		printw("\nVERY IMPORTANT - IF YOU ARE UNABLE TO ROTATE, IT IS BECAUSE \nROTATING THE BLOCK MAKES IT GO OUT OF BOUNDS. THIS MEANS YOU \nMIGHT HAVE TO MOVE IT A SPACE LEFT OR RIGHT BEFORE ROTATING.\n");
+		printw("\nVERY IMPORTANT - IF YOU ARE UNABLE TO ROTATE, IT IS BECAUSE \nROTATING THE BLOCK MAKES IT GO OUT OF BOUNDS. THIS MEANS YOU \nMIGHT HAVE TO MOVE IT A SPACE LEFT OR RIGHT BEFORE ROTATING.\n\nNote: high scores are stored directly onto your computer\n");
 		printw("\nYou can close your current game at any time by pressing 'q'\n\n");
 		printw("[PRESS ANY KEY TO CLOSE THIS WINDOW]\n");
 
@@ -309,8 +309,13 @@ void ascii(){ //prints ascii
 	printw("   |  '.'    \`''-...... -'      |  '.'| |       .'.'.-'  /  \n");
 	printw("   |   /                        |   / |_|       .'   \\_.'   \n");
 	printw("   \`'-'                         \`'-'                        \n");
-	printw("By Anna Denisova, 2023\n\n");
-	printw("[To continue press any key]\n");
+	printw("* MacOS or Linux recommended but not required *\n* Can be played with a RP2040 microcontroller using button keys, ask me (Anna) if you want to try * \n* Have fun! * \n\n[To continue press any key]\n\n\nNote: This is the macos/linux version\nCopyright (c) 2023 Anna Denisova");
+	//printw("[To continue press any key]\n");
+	
+                                                          
+
+
+
 	int c = getch(); //to end 
 }
 
